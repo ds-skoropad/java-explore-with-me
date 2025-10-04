@@ -12,7 +12,7 @@ class EndpointHitMapperTest {
     private static final String APP = "ewm-main-service";
     private static final String URI = "/events/1";
     private static final String IP = "192.163.0.1";
-    private static final LocalDateTime TIMESTAMP = LocalDateTime.of(2022,9,6,11,0,23);
+    private static final LocalDateTime TIMESTAMP = LocalDateTime.of(2022, 9, 6, 11, 0, 23);
 
     @Test
     void toEndpointHit() {

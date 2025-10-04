@@ -14,7 +14,7 @@ public class EndpointHitCreateDtoTest {
     private static final String CORRECT_APP = "ewm-main-service";
     private static final String CORRECT_URI = "/events/1";
     private static final String CORRECT_IP = "192.163.0.1";
-    private static final LocalDateTime CORRECT_TIMESTAMP = LocalDateTime.of(2022,9,6,11,0,23);
+    private static final LocalDateTime CORRECT_TIMESTAMP = LocalDateTime.of(2022, 9, 6, 11, 0, 23);
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
@@ -26,7 +26,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectAppShouldBeBlank () {
+    public void notCorrectAppShouldBeBlank() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(" ", CORRECT_URI, CORRECT_IP, CORRECT_TIMESTAMP);
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
@@ -34,7 +34,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectUriShouldBeBlank () {
+    public void notCorrectUriShouldBeBlank() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(CORRECT_APP, " ", CORRECT_IP, CORRECT_TIMESTAMP);
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
@@ -42,7 +42,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectIpShouldBeBlank () {
+    public void notCorrectIpShouldBeBlank() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(CORRECT_APP, CORRECT_URI, " ", CORRECT_TIMESTAMP);
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
@@ -50,7 +50,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectIpShouldBeNotIp () {
+    public void notCorrectIpShouldBeNotIp() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(CORRECT_APP, CORRECT_URI, "192.168.1.500", CORRECT_TIMESTAMP);
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
@@ -58,7 +58,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectTimestampShouldBeNull () {
+    public void notCorrectTimestampShouldBeNull() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(CORRECT_APP, CORRECT_URI, CORRECT_IP, null);
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
@@ -66,7 +66,7 @@ public class EndpointHitCreateDtoTest {
     }
 
     @Test
-    public void notCorrectTimestampShouldBeFuture () {
+    public void notCorrectTimestampShouldBeFuture() {
         final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(CORRECT_APP, CORRECT_URI, CORRECT_IP, LocalDateTime.now().plusDays(1));
         final Set<ConstraintViolation<EndpointHitCreateDto>> violations = validator.validate(endpointHitCreateDto);
 
