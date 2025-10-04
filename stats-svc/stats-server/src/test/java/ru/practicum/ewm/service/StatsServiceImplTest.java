@@ -28,7 +28,7 @@ class StatsServiceImplTest {
     @InjectMocks
     private StatsServiceImpl statsService;
 
-    private final LocalDateTime TIMESTAMP = LocalDateTime.of(2022, 9, 6, 11, 0, 23);
+    private final LocalDateTime timestamp = LocalDateTime.of(2022, 9, 6, 11, 0, 23);
     final List<ViewStatsDto> expected = List.of(
             new ViewStatsDto("test-app-1", "/events/1", 1L),
             new ViewStatsDto("test-app-2", "/events/2", 2L)
@@ -40,8 +40,8 @@ class StatsServiceImplTest {
         final String URI = "/events/1";
         final String IP = "192.163.0.1";
 
-        final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(APP, URI, IP, TIMESTAMP);
-        final EndpointHit endpointHit = new EndpointHit(0L, APP, URI, IP, TIMESTAMP);
+        final EndpointHitCreateDto endpointHitCreateDto = new EndpointHitCreateDto(APP, URI, IP, timestamp);
+        final EndpointHit endpointHit = new EndpointHit(0L, APP, URI, IP, timestamp);
 
         when(endpointHitRepository.save(any())).thenReturn(endpointHit);
         statsService.createEndpointHit(endpointHitCreateDto);
@@ -52,7 +52,7 @@ class StatsServiceImplTest {
     @Test
     void getStats_whenNotUnique() {
         when(endpointHitRepository.findAllStats(any(), any(), any())).thenReturn(expected);
-        List<ViewStatsDto> result = statsService.getStats(TIMESTAMP, TIMESTAMP, List.of(), false);
+        List<ViewStatsDto> result = statsService.getStats(timestamp, timestamp, List.of(), false);
 
         assertThat(result)
                 .first()
@@ -66,7 +66,7 @@ class StatsServiceImplTest {
     @Test
     void getStats_whenUnique() {
         when(endpointHitRepository.findAllUniqueStats(any(), any(), any())).thenReturn(expected);
-        List<ViewStatsDto> result = statsService.getStats(TIMESTAMP, TIMESTAMP, List.of(), true);
+        List<ViewStatsDto> result = statsService.getStats(timestamp, timestamp, List.of(), true);
 
         assertThat(result)
                 .first()
@@ -79,7 +79,7 @@ class StatsServiceImplTest {
 
     @Test
     void getStats_whenStartIsAfterEnd_thenException() {
-        assertThatThrownBy(() -> statsService.getStats(TIMESTAMP, TIMESTAMP.minusYears(1), List.of(), false))
+        assertThatThrownBy(() -> statsService.getStats(timestamp, timestamp.minusYears(1), List.of(), false))
                 .isInstanceOf(NotValidException.class)
                 .hasMessageContaining("The start date cannot be after the end date");
         verify(endpointHitRepository, never()).findAllStats(any(), any(), any());
