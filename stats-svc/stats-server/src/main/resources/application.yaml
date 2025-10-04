@@ -55,7 +55,7 @@ spring:
     init:
       mode: always # init src/main/resources schema.sql, data.sql
   datasource:
-    url: jdbc:postgresql://stats-db:5432/stats-db
+    url: jdbc:postgresql://stats-db:6541/stats-db
     driverClassName: org.postgresql.Driver
     username: sa
     password: password
