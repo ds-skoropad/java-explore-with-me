@@ -2,6 +2,7 @@ package ru.practicum.ewm.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import ru.practicum.ewm.service.StatsService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class StatsController {
@@ -20,6 +22,7 @@ public class StatsController {
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
     public void createEndpointHit(@Valid @RequestBody EndpointHitCreateDto endpointHitCreateDto) {
+        log.info("POST createEndpointHit: {}", endpointHitCreateDto);
         statsService.createEndpointHit(endpointHitCreateDto);
     }
 

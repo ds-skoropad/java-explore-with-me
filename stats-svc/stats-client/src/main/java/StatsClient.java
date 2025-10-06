@@ -8,15 +8,13 @@ import org.springframework.web.util.UriBuilder;
 import ru.practicum.ewm.dto.EndpointHitCreateDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class StatsClient {
     private final RestClient restClient;
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public StatsClient(@Value("${stats-server.url:http://stats-server:9090}") String statServerUrl,
@@ -35,13 +33,12 @@ public class StatsClient {
                 .toBodilessEntity();
     }
 
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, Optional<List<String>> uris,
-                                       Boolean unique) {
+    public List<ViewStatsDto> getStats(Instant start, Instant end, Optional<List<String>> uris, Boolean unique) {
         return restClient.get()
                 .uri(uriBuilder -> {
                     UriBuilder builder = uriBuilder.path("/stats")
-                            .queryParam("start", start.format(DATE_TIME_FORMATTER))
-                            .queryParam("end", end.format(DATE_TIME_FORMATTER))
+                            .queryParam("start", start)
+                            .queryParam("end", end)
                             .queryParam("unique", unique);
                     uris.ifPresent(l -> l.forEach(uri -> uriBuilder.queryParam("uris", uri)));
                     return builder.build();
