@@ -16,8 +16,8 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Ip4Validator.class)
-public @interface Ip4 {
+@Constraint(validatedBy = IpAddressValidator.class)
+public @interface IpAddress {
 
     String message() default "must be an IP address";
 
