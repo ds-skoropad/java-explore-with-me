@@ -61,8 +61,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto cancelRequestForUser(Long userId, Long requestId) {
-        User user = findUserById(userId);
-        Request request = findRequestById(requestId);
+        Request request = findRequestByIdAndRequestorId(requestId, userId);
         if (!request.getRequester().getId().equals(userId)) {
             throw new ConflictException("The user is not the owner of the request");
         }
@@ -83,8 +82,9 @@ public class RequestServiceImpl implements RequestService {
                 () -> new NotFoundException(String.format("Event not found: id = %d", eventId)));
     }
 
-    private Request findRequestById(Long requestId) {
-        return requestRepository.findById(requestId).orElseThrow(
-                () -> new NotFoundException(String.format("Request not found: id = %d", requestId)));
+    private Request findRequestByIdAndRequestorId(Long requestId, Long requestorId) {
+        return requestRepository.findByIdAndRequesterId(requestId, requestorId).orElseThrow(
+                () -> new NotFoundException(
+                        String.format("Request not found: requestId = %d, requestorId = %d", requestId, requestorId)));
     }
 }

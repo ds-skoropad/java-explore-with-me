@@ -11,7 +11,7 @@ public interface EventService {
 
     List<EventShortDto> getEvents(GetEventsPublicRequest getEventsPublicRequest);
 
-    EventFullDto getEventById(Long eventId, String uri, String ip);
+    EventFullDto getEventById(Long eventId);
 
     List<EventFullDto> getEventsForAdmin(GetEventsAdminRequest getEventsAdminRequest);
 

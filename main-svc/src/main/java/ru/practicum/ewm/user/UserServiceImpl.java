@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.exception.ConflictException;
-import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserRequest;
 import ru.practicum.ewm.user.dto.UserDto;
 
@@ -32,9 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(NewUserRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new ConflictException("Email already exists.");
-        }
         User createUser = userRepository.save(UserMapper.toUser(request));
         log.info("Create user: {}", createUser);
         return UserMapper.toUserDto(createUser);
@@ -42,8 +37,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User not found: id = %d", userId)));
         userRepository.deleteById(userId);
         log.info("Delete user: id = {}", userId);
     }

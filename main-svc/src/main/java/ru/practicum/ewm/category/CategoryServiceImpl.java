@@ -27,7 +27,6 @@ public class CategoryServiceImpl implements CategoryService {
     // Admin access
     @Override
     public CategoryDto createCategory(NewCategoryDto dto) {
-        existsCategoryName(dto.name());
         Category createCategory = categoryRepository.save(CategoryMapper.toCategory(dto));
         log.info("Create category: {}", createCategory);
         return CategoryMapper.toCategoryDto(createCategory);
@@ -35,7 +34,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long categoryId) {
-        findCategoryById(categoryId);
         if (eventRepository.existsByCategoryId(categoryId)) {
             throw new ConflictException("Сannot delete a category with associated events.");
         }
@@ -47,7 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(UpdateCategoryDto dto) {
         Category category = findCategoryById(dto.id());
         if (!category.getName().equals(dto.name())) {
-            existsCategoryName(dto.name());
             category = categoryRepository.save(CategoryMapper.updateCategory(category, dto));
         }
         log.info("Update category: {}", category);
@@ -74,11 +71,5 @@ public class CategoryServiceImpl implements CategoryService {
     private Category findCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category not found: id = %d", categoryId)));
-    }
-
-    private void existsCategoryName(String name) {
-        if (categoryRepository.existsByName(name)) {
-            throw new ConflictException(String.format("Сategory name already exists: name = %s", name));
-        }
     }
 }

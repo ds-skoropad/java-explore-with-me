@@ -14,8 +14,6 @@ public record GetEventsPublicRequest(
         Boolean onlyAvailable,
         EventSort sort,
         Integer from,
-        Integer size,
-        String uri,
-        String ip
+        Integer size
 ) {
 }

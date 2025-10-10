@@ -58,7 +58,6 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteCompilationByIdForAdmin(Long compilationId) {
-        findCompilationById(compilationId);
         compilationRepository.deleteById(compilationId);
         log.info("Delete compilation: id = {}", compilationId);
     }

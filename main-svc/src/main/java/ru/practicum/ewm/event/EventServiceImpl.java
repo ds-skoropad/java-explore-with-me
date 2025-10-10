@@ -47,7 +47,6 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<EventShortDto> getEvents(GetEventsPublicRequest request) {
-        statsHelper.createEndpointHit(request.uri(), request.ip());
         validDateRange(request.rangeStart(), request.rangeEnd());
         Sort sort = EventSort.EVENT_DATE.equals(request.sort()) ? Sort.by("eventDate") : Sort.unsorted();
         Pageable pageable = PageRequest.of(request.from() / request.size(), request.size(), sort);
@@ -82,8 +81,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public EventFullDto getEventById(Long eventId, String uri, String ip) {
-        statsHelper.createEndpointHit(uri, ip);
+    public EventFullDto getEventById(Long eventId) {
         Event event = findEventById(eventId);
         if (!event.getState().equals(EventState.PUBLISHED))
             throw new NotFoundException(String.format("Event not published: id = %d", eventId));

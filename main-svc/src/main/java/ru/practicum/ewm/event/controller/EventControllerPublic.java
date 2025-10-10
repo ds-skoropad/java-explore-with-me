@@ -11,6 +11,7 @@ import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.GetEventsPublicRequest;
 import ru.practicum.ewm.event.model.EventSort;
+import ru.practicum.ewm.helper.StatsHelper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +24,7 @@ import static ru.practicum.ewm.MainConstants.DATE_TIME_PATTERN;
 @RequiredArgsConstructor
 public class EventControllerPublic {
     private final EventService eventService;
+    private final StatsHelper statsHelper;
 
     @GetMapping
     public List<EventShortDto> getEvents(
@@ -38,12 +40,14 @@ public class EventControllerPublic {
             HttpServletRequest request
     ) {
         GetEventsPublicRequest getEventsPublicRequest = new GetEventsPublicRequest(text, categories, paid, rangeStart,
-                rangeEnd, onlyAvailable, sort, from, size, request.getRequestURI(), request.getRemoteAddr());
+                rangeEnd, onlyAvailable, sort, from, size);
+        statsHelper.createEndpointHit(request.getRequestURI(), request.getRemoteAddr());
         return eventService.getEvents(getEventsPublicRequest);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable @Min(1) Long eventId, HttpServletRequest request) {
-        return eventService.getEventById(eventId, request.getRequestURI(), request.getRemoteAddr());
+        statsHelper.createEndpointHit(request.getRequestURI(), request.getRemoteAddr());
+        return eventService.getEventById(eventId);
     }
 }

@@ -2,6 +2,7 @@ package ru.practicum.ewm.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,19 +27,19 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler()
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleNotValid(final NotValidException e) {
-        String reason = "Invalid data.";
-        log.warn("{}: {}", HttpStatus.CONFLICT.name(), reason, e);
-        return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.BAD_REQUEST.name(), LocalDateTime.now());
-    }
-
-    @ExceptionHandler()
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
         String reason = "Required request body is missing.";
         log.warn("{}: {}", HttpStatus.CONFLICT, reason, e);
-        return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.BAD_REQUEST.name(), LocalDateTime.now());
+        return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.CONFLICT.name(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
+        String reason = "Data restriction violation.";
+        log.warn("{}: {}", HttpStatus.CONFLICT, reason, e);
+        return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.CONFLICT.name(), LocalDateTime.now());
     }
 
     @ExceptionHandler()
@@ -46,6 +47,14 @@ public class ExceptionHandlers {
     public ApiError handleMissingServletRequestParameter(final MissingServletRequestParameterException e) {
         String reason = "Equired request parameter is missing from the HTTP request.";
         log.warn("{}: {}", HttpStatus.BAD_REQUEST, reason, e);
+        return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.BAD_REQUEST.name(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleNotValid(final NotValidException e) {
+        String reason = "Invalid data.";
+        log.warn("{}: {}", HttpStatus.CONFLICT.name(), reason, e);
         return new ApiError(List.of(), e.getMessage(), reason, HttpStatus.BAD_REQUEST.name(), LocalDateTime.now());
     }
 
