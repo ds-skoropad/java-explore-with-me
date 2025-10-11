@@ -1,3 +1,5 @@
+package ru.practicum.ewm;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -8,17 +10,16 @@ import org.springframework.web.util.UriBuilder;
 import ru.practicum.ewm.dto.EndpointHitCreateDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class StatsClient {
+public class StatsClientImpl implements StatsClient {
     private final RestClient restClient;
 
     @Autowired
-    public StatsClient(@Value("${stats-server.url:http://stats-server:9090}") String statServerUrl,
-                       RestClient.Builder restClientBuilder) {
+    public StatsClientImpl(@Value("${stats-server.url:http://stats-server:9090}") String statServerUrl,
+                           RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder
                 .baseUrl(statServerUrl)
                 .build();
@@ -33,7 +34,7 @@ public class StatsClient {
                 .toBodilessEntity();
     }
 
-    public List<ViewStatsDto> getStats(Instant start, Instant end, Optional<List<String>> uris, Boolean unique) {
+    public List<ViewStatsDto> getStats(String start, String end, Optional<List<String>> uris, Boolean unique) {
         return restClient.get()
                 .uri(uriBuilder -> {
                     UriBuilder builder = uriBuilder.path("/stats")
@@ -44,7 +45,7 @@ public class StatsClient {
                     return builder.build();
                 })
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
-
 }

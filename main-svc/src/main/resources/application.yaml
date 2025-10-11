@@ -2,7 +2,7 @@ spring:
   profiles:
     active: production
 server:
-  port: 9090
+  port: 8080
 ---
 # DEVELOPMENT
 spring:
@@ -25,7 +25,7 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:stats-db
+    url: jdbc:h2:mem:ewm-db
     driverClassName: org.h2.Driver
     username: sa
     password: password
@@ -37,6 +37,8 @@ logging:
     ru:
       practicum:
         ewm: TRACE
+stats-server:
+  url: http://localhost:9090
 ---
 # PRODUCTION
 spring:
@@ -55,10 +57,12 @@ spring:
     init:
       mode: always # init src/main/resources schema.sql, data.sql
   datasource:
-    url: jdbc:postgresql://stats-db:6541/stats-db
+    url: jdbc:postgresql://ewm-db:5432/ewm-db
     driverClassName: org.postgresql.Driver
     username: sa
     password: password
+stats-server:
+  url: http://stats-server:9090
 ---
 # TEST
 spring:
@@ -76,7 +80,9 @@ spring:
   sql:
     init:
       mode: always # init src/main/resources schema.sql, data.sql  datasource:
-    url: jdbc:h2:mem:stats-db
+    url: jdbc:h2:mem:ewm-db
     driverClassName: org.h2.Driver
     username: sa
     password: password
+stats-server:
+  url: http://localhost:9090
