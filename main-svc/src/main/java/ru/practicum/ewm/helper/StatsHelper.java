@@ -38,7 +38,11 @@ public class StatsHelper {
         statsClient.createEndpointHit(endpointHitCreateDto);
     }
 
-    public Map<Long, Long> getViewsForEvents(List<Event> events) {
+    public Long getViews(Event event) {
+        return getManyViews(List.of(event)).getOrDefault(event.getId(), 0L);
+    }
+
+    public Map<Long, Long> getManyViews(List<Event> events) {
         LocalDateTime minDate = events.stream()
                 .map(Event::getPublishedOn)
                 .filter(Objects::nonNull)
@@ -62,24 +66,24 @@ public class StatsHelper {
     }
 
     public EventFullDto toEventFullDto(Event event) {
-        return EventMapper.toEventFullDto(event, getViewsForEvents(List.of(event)).getOrDefault(event.getId(), 0L));
+        return EventMapper.toEventFullDto(event, getViews(event), null);
     }
 
     public List<EventFullDto> toManyEventFullDto(List<Event> events) {
-        Map<Long, Long> views = getViewsForEvents(events);
+        Map<Long, Long> views = getManyViews(events);
         return events.stream()
-                .map(event -> EventMapper.toEventFullDto(event, views.getOrDefault(event.getId(), 0L)))
+                .map(event -> EventMapper.toEventFullDto(event, views.getOrDefault(event.getId(), 0L), null))
                 .toList();
     }
 
     public EventShortDto toEventShortDto(Event event) {
-        return EventMapper.toEventShortDto(event, getViewsForEvents(List.of(event)).getOrDefault(event.getId(), 0L));
+        return EventMapper.toEventShortDto(event, getViews(event), null);
     }
 
     public List<EventShortDto> toManyEventShortDto(List<Event> events) {
-        Map<Long, Long> views = getViewsForEvents(events);
+        Map<Long, Long> views = getManyViews(events);
         return events.stream()
-                .map(event -> EventMapper.toEventShortDto(event, views.getOrDefault(event.getId(), 0L)))
+                .map(event -> EventMapper.toEventShortDto(event, views.getOrDefault(event.getId(), 0L), null))
                 .toList();
     }
 
@@ -94,14 +98,14 @@ public class StatsHelper {
                 .map(Compilation::getEvents)
                 .flatMap(Set::stream)
                 .toList();
-        Map<Long, Long> views = getViewsForEvents(events);
+        Map<Long, Long> views = getManyViews(events);
         return compilations.stream()
                 .map(compilation -> CompilationMapper.toCompilationDto(
                         compilation,
                         compilation.getEvents().stream()
                                 .map(event -> EventMapper.toEventShortDto(
                                         event,
-                                        views.getOrDefault(event.getId(), 0L)))
+                                        views.getOrDefault(event.getId(), 0L), null))
                                 .collect(Collectors.toSet())))
                 .toList();
     }

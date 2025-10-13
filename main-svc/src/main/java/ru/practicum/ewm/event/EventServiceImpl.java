@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.Category;
 import ru.practicum.ewm.category.CategoryRepository;
+import ru.practicum.ewm.comment.CommentRepository;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.model.*;
 import ru.practicum.ewm.exception.ConflictException;
@@ -41,6 +42,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
     private final StatsHelper statsHelper;
 
     // Public access
@@ -72,7 +74,10 @@ public class EventServiceImpl implements EventService {
         }
 
         Page<Event> events = eventRepository.findAll(spec, pageable);
-        List<EventShortDto> result = statsHelper.toManyEventShortDto(events.toList());
+        List<EventShortDto> result = EventMapper.toManyEventShortDto(
+                events.toList(),
+                statsHelper.getManyViews(events.toList()),
+                commentRepository.countCommentsGroupedByEvents(events.map(Event::getId).toList()));
         if (EventSort.VIEWS.equals(request.sort())) {
             result.sort(Comparator.comparing(EventShortDto::views));
         }
@@ -85,7 +90,7 @@ public class EventServiceImpl implements EventService {
         Event event = findEventById(eventId);
         if (!event.getState().equals(EventState.PUBLISHED))
             throw new NotFoundException(String.format("Event not published: id = %d", eventId));
-        return statsHelper.toEventFullDto(event);
+        return EventMapper.toEventFullDto(event, statsHelper.getViews(event), commentRepository.countByEventId(eventId));
     }
 
     // Admin access

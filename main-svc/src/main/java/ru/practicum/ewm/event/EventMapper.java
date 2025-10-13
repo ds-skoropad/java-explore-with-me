@@ -12,6 +12,8 @@ import ru.practicum.ewm.user.User;
 import ru.practicum.ewm.user.UserMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EventMapper {
@@ -24,7 +26,7 @@ public final class EventMapper {
         return new EventLocation(locationDto.lat(), locationDto.lon());
     }
 
-    public static EventShortDto toEventShortDto(Event event, Long views) {
+    public static EventShortDto toEventShortDto(Event event, Long views, Long comments) {
         return new EventShortDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -34,11 +36,23 @@ public final class EventMapper {
                 UserMapper.toUserShortDto(event.getInitiator()),
                 event.getPaid(),
                 event.getTitle(),
-                views
+                views,
+                comments
         );
     }
 
-    public static EventFullDto toEventFullDto(Event event, Long views) {
+    public static List<EventShortDto> toManyEventShortDto(List<Event> events, Map<Long, Long> views,
+                                                          Map<Long, Long> comments) {
+        return events.stream()
+                .map(event -> EventMapper.toEventShortDto(
+                        event,
+                        views.getOrDefault(event.getId(), 0L),
+                        comments.getOrDefault(event.getId(), 0L))
+                )
+                .toList();
+    }
+
+    public static EventFullDto toEventFullDto(Event event, Long views, Long comments) {
         return new EventFullDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -55,8 +69,20 @@ public final class EventMapper {
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),
-                views
+                views,
+                comments
         );
+    }
+
+    public static List<EventFullDto> toManyEventFullDto(List<Event> events, Map<Long, Long> views,
+                                                        Map<Long, Long> comments) {
+        return events.stream()
+                .map(event -> EventMapper.toEventFullDto(
+                        event,
+                        views.getOrDefault(event.getId(), 0L),
+                        comments.getOrDefault(event.getId(), 0L))
+                )
+                .toList();
     }
 
     public static void patchEventForAdmin(Event event, UpdateEventAdminRequest request) {
