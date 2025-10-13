@@ -19,12 +19,11 @@ import ru.practicum.ewm.comment.dto.UpdateCommentDto;
 public class CommentControllerAdmin {
     private final CommentService commentService;
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping()
     public CommentDto updateCommentByIdForAdmin(
-            @PathVariable @Min(1) Long commentId,
             @RequestBody @Valid UpdateCommentDto dto) {
-        log.info("PATCH updateCommentByIdForAdmin: commentId={}", commentId);
-        return commentService.updateCommentForAdmin(commentId, dto);
+        log.info("PATCH updateCommentByIdForAdmin: {}", dto);
+        return commentService.updateCommentForAdmin(dto);
     }
 
     @DeleteMapping("/{commentId}")

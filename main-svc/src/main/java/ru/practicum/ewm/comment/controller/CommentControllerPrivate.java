@@ -31,23 +31,21 @@ public class CommentControllerPrivate {
         return commentService.getCommentsForUser(userId, eventId, from, size);
     }
 
-    @PostMapping("/events/{eventId}")
+    @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto createCommentForUser(
             @PathVariable @Min(1) Long userId,
-            @PathVariable @Min(1) Long eventId,
-            @RequestBody @Valid NewCommentDto newCommentDto) {
-        log.info("POST createCommentForUser: userId={}, eventId={}", userId, eventId);
-        return commentService.createCommentForUser(userId, eventId, newCommentDto);
+            @RequestBody @Valid NewCommentDto dto) {
+        log.info("POST createCommentForUser: userId={}, {}", userId, dto);
+        return commentService.createCommentForUser(userId, dto);
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping()
     public CommentDto updateCommentForUser(
             @PathVariable @Min(1) Long userId,
-            @PathVariable @Min(1) Long commentId,
             @RequestBody @Valid UpdateCommentDto dto) {
-        log.info("PATCH updateCommentForUser: userId={}, commentId={}", userId, commentId);
-        return commentService.updateCommentForUser(userId, commentId, dto);
+        log.info("PATCH updateCommentForUser: userId={}, {}", userId, dto);
+        return commentService.updateCommentForUser(userId, dto);
     }
 
     @DeleteMapping("/{commentId}")

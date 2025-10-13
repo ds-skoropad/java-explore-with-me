@@ -48,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
 
     // Admin access
     @Override
-    public CommentDto updateCommentForAdmin(Long commentId, UpdateCommentDto dto) {
-        Comment comment = findCommentById(commentId);
+    public CommentDto updateCommentForAdmin(UpdateCommentDto dto) {
+        Comment comment = findCommentById(dto.commentId());
         checkAndUpdateComment(comment, dto);
         return CommentMapper.toCommentDto(comment);
     }
@@ -71,9 +71,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto createCommentForUser(Long userId, Long eventId, NewCommentDto dto) {
+    public CommentDto createCommentForUser(Long userId, NewCommentDto dto) {
         User user = findUserById(userId);
-        Event event = findEventById(eventId);
+        Event event = findEventById(dto.eventId());
         if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new ConflictException("Only comment on published events..");
         }
@@ -83,8 +83,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto updateCommentForUser(Long userId, Long commentId, UpdateCommentDto dto) {
-        Comment comment = findCommentById(commentId);
+    public CommentDto updateCommentForUser(Long userId, UpdateCommentDto dto) {
+        Comment comment = findCommentById(dto.commentId());
         if (!comment.getAuthor().getId().equals(userId)) {
             throw new ConflictException("Only the author can edit the comment.");
         }
