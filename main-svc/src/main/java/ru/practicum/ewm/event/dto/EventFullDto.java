@@ -28,6 +28,7 @@ public record EventFullDto(
         Boolean requestModeration, // default = true
         EventState state,
         String title,
-        Long views
+        Long views,
+        Long comments
 ) {
 }
